@@ -1,0 +1,36 @@
+{
+  "editor.fontFamily": "Fira Code",
+  "editor.fontLigatures": true,
+  "editor.renderWhitespace": "all",
+  "editor.detectIndentation": false,
+  "files.encoding": "utf8",
+  "files.eol": "\n",
+  "files.insertFinalNewline": true,
+  "files.exclude": {
+    "**/.git": false
+  },
+  "terminal.integrated.fontFamily": "Fira Code",
+  "[go]": {
+    "editor.tabSize": 2
+  },
+  "go.delveConfig": {
+    "dlvLoadConfig": {
+      "maxStringLen": 10000
+    }
+  },
+  "go.lintTool": "golangci-lint",
+  "go.lintFlags": [
+    "--config=${workspaceFolder}/.golangci.yml",
+    "--fast"
+  ],
+  "[json]": {
+    "editor.formatOnSave": true,
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true
+  },
+  "[jsonc]": {
+    "editor.formatOnSave": true,
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true
+  }
+}

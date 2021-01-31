@@ -1,0 +1,12 @@
+version: "3.7"
+services:
+  monkey:
+    build: ./golang
+    image: golang:monkey
+    container_name: monkey
+    restart: always
+    ports:
+      - 6060:6060
+    volumes:
+      - ./..:/home/monkey
+    tty: true
