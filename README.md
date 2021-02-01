@@ -40,7 +40,7 @@ Linux distributionは**Ubuntu 20.04 LTS**を使用する。
 1. ```ctrl + Shift + B ```またはコマンドパレットから```Tasks: Run Build Task```を実行する。
 
 ## Lint
-1. ```golangci-lint run ./...``` を実行する。
+1. ```golangci-lint run ./... --config=.golangci.yml --fast``` を実行する。
 
 ## Doc
 1. ```godoc -http=:6060``` を実行する。
