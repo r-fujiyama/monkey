@@ -1,10 +1,14 @@
 package ast
 
-import "monkey/token"
+import (
+	"monkey/token"
+	"strings"
+)
 
 // Node 全てのノードが実装するインタフェース。
 type Node interface {
 	TokenLiteral() string
+	String() string
 }
 
 // Statement 全てのステートメントノードが実装するインタフェース。
@@ -32,6 +36,16 @@ func (p *Program) TokenLiteral() string {
 	return ""
 }
 
+func (p *Program) String() string {
+	out := &strings.Builder{}
+
+	for _, s := range p.Statements {
+		out.WriteString(s.String())
+	}
+
+	return out.String()
+}
+
 // LetStatement Letステートメント
 type LetStatement struct {
 	Token token.Token // token.LET トークン
@@ -45,6 +59,22 @@ func (ls *LetStatement) statementNode() {}
 // TokenLiteral トークンのリテラル値を返す
 func (ls *LetStatement) TokenLiteral() string { return ls.Token.Literal }
 
+func (ls *LetStatement) String() string {
+	out := &strings.Builder{}
+
+	out.WriteString(ls.TokenLiteral() + " ")
+	out.WriteString(ls.Name.String())
+	out.WriteString(" = ")
+
+	if ls.Value != nil {
+		out.WriteString(ls.Value.String())
+	}
+
+	out.WriteString(";")
+
+	return out.String()
+}
+
 // ReturnStatement Returnステートメント
 type ReturnStatement struct {
 	Token       token.Token // token.RETURN トークン
@@ -56,6 +86,20 @@ func (rs *ReturnStatement) statementNode() {}
 
 // TokenLiteral トークンのリテラル値を返す。
 func (rs *ReturnStatement) TokenLiteral() string { return rs.Token.Literal }
+
+func (rs *ReturnStatement) String() string {
+	out := &strings.Builder{}
+
+	out.WriteString(rs.TokenLiteral() + " ")
+
+	if rs.ReturnValue != nil {
+		out.WriteString(rs.ReturnValue.String())
+	}
+
+	out.WriteString(";")
+
+	return out.String()
+}
 
 // ExpressionStatement 式文 例：x + 10;
 type ExpressionStatement struct {
@@ -69,6 +113,13 @@ func (es *ExpressionStatement) statementNode() {}
 // TokenLiteral トークンのリテラル値を返す。
 func (es *ExpressionStatement) TokenLiteral() string { return es.Token.Literal }
 
+func (es *ExpressionStatement) String() string {
+	if es.Expression != nil {
+		return es.Expression.String()
+	}
+	return ""
+}
+
 // Identifier 識別子
 type Identifier struct {
 	Token token.Token // token.IDENT トークン
@@ -80,3 +131,5 @@ func (i *Identifier) expressionNode() {}
 
 // TokenLiteral トークンのリテラル値を返す。
 func (i *Identifier) TokenLiteral() string { return i.Token.Literal }
+
+func (i *Identifier) String() string { return i.Value }
