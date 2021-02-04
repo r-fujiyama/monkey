@@ -73,7 +73,7 @@ const (
 	RETURN = "RETURN"
 )
 
-// Token 字句解析器(Lexer)より出力されるトークン
+// Token 字句解析器(Lexer)より出力されるトークン。
 type Token struct {
 	Type    Type
 	Literal string
@@ -89,7 +89,7 @@ var keywords = map[string]Type{
 	"return": RETURN,
 }
 
-// LookupIdent 与えられた識別子に対して適切な Type を返す
+// LookupIdent 与えられた識別子に対して適切なToken.Typeを返す。
 func LookupIdent(ident string) Type {
 	if tok, ok := keywords[ident]; ok {
 		return tok
