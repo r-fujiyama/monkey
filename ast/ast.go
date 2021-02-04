@@ -56,3 +56,15 @@ func (i *Identifier) expressionNode() {}
 
 // TokenLiteral トークンのリテラル値を返す。
 func (i *Identifier) TokenLiteral() string { return i.Token.Literal }
+
+// ReturnStatement Returnステートメント
+type ReturnStatement struct {
+	Token       token.Token // token.RETURN トークン
+	ReturnValue Expression
+}
+
+//nolint コンパイラから支援を受けるために、ダミーメソッドを定義。
+func (rs *ReturnStatement) statementNode() {}
+
+// TokenLiteral トークンのリテラル値を返す。
+func (rs *ReturnStatement) TokenLiteral() string { return rs.Token.Literal }
