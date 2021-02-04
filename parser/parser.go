@@ -16,13 +16,13 @@ type Parser struct {
 	peekToken token.Token
 }
 
-// New 構文解析器を生成する
+// New 構文解析器を生成する。
 func New(l *lexer.Lexer) *Parser {
 	p := &Parser{
 		l:      l,
 		errors: []string{},
 	}
-	// 2つのトークンを読み込む。curTokenとpeekTokenの両方がセットされる
+	// 2つのトークンを読み込む。curTokenとpeekTokenの両方がセットされる。
 	p.nextToke()
 	p.nextToke()
 	return p
@@ -33,7 +33,7 @@ func (p *Parser) nextToke() {
 	p.peekToken = p.l.NextToken()
 }
 
-// ParseProgram プログラムの構文解析を行う
+// ParseProgram プログラムの構文解析を行う。
 func (p *Parser) ParseProgram() *ast.Program {
 	program := &ast.Program{}
 
@@ -70,7 +70,7 @@ func (p *Parser) parseLetStatement() *ast.LetStatement {
 		return nil
 	}
 
-	// TODO: セミコロンに遭遇するまで式を読み飛ばしてしまっている
+	// TODO: セミコロンに遭遇するまで式を読み飛ばしてしまっている。
 	for !p.curTokenIs(token.SEMICOLON) {
 		p.nextToke()
 	}
