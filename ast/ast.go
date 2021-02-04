@@ -45,18 +45,6 @@ func (ls *LetStatement) statementNode() {}
 // TokenLiteral トークンのリテラル値を返す
 func (ls *LetStatement) TokenLiteral() string { return ls.Token.Literal }
 
-// Identifier 識別子情報
-type Identifier struct {
-	Token token.Token // token.IDENT トークン
-	Value string
-}
-
-//nolint コンパイラから支援を受けるために、ダミーメソッドを定義。
-func (i *Identifier) expressionNode() {}
-
-// TokenLiteral トークンのリテラル値を返す。
-func (i *Identifier) TokenLiteral() string { return i.Token.Literal }
-
 // ReturnStatement Returnステートメント
 type ReturnStatement struct {
 	Token       token.Token // token.RETURN トークン
@@ -68,3 +56,27 @@ func (rs *ReturnStatement) statementNode() {}
 
 // TokenLiteral トークンのリテラル値を返す。
 func (rs *ReturnStatement) TokenLiteral() string { return rs.Token.Literal }
+
+// ExpressionStatement 式文 例：x + 10;
+type ExpressionStatement struct {
+	Token      token.Token // 式の最初のトークン
+	Expression Expression
+}
+
+//nolint コンパイラから支援を受けるために、ダミーメソッドを定義。
+func (es *ExpressionStatement) statementNode() {}
+
+// TokenLiteral トークンのリテラル値を返す。
+func (es *ExpressionStatement) TokenLiteral() string { return es.Token.Literal }
+
+// Identifier 識別子
+type Identifier struct {
+	Token token.Token // token.IDENT トークン
+	Value string
+}
+
+//nolint コンパイラから支援を受けるために、ダミーメソッドを定義。
+func (i *Identifier) expressionNode() {}
+
+// TokenLiteral トークンのリテラル値を返す。
+func (i *Identifier) TokenLiteral() string { return i.Token.Literal }
