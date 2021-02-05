@@ -7,6 +7,23 @@ import (
 	"monkey/token"
 )
 
+/// 演算子の優先順位
+const (
+	_ int = iota
+	LOWEST
+	EQUALS      // ==
+	LESSGREATER // > or <
+	SUM         // +
+	PRODUCT     // *
+	PREFIX      // -X or !X
+	CALL        // myFunction(X)
+)
+
+type (
+	prefixParseFn func() ast.Expression
+	infixParseFn  func(ast.Expression) ast.Expression
+)
+
 // Parser 構文解析器
 type Parser struct {
 	l      *lexer.Lexer
@@ -14,6 +31,9 @@ type Parser struct {
 
 	curToken  token.Token
 	peekToken token.Token
+
+	prefixParseFn map[token.Type]prefixParseFn
+	infixParseFn  map[token.Type]infixParseFn
 }
 
 // New 構文解析器を生成する。
@@ -22,6 +42,10 @@ func New(l *lexer.Lexer) *Parser {
 		l:      l,
 		errors: []string{},
 	}
+
+	p.prefixParseFn = make(map[token.Type]prefixParseFn)
+	p.registerPrefix(token.IDENT, p.parseIdentifier)
+
 	// 2つのトークンを読み込む。curTokenとpeekTokenの両方がセットされる。
 	p.nextToke()
 	p.nextToke()
@@ -55,7 +79,7 @@ func (p *Parser) parseStatement() ast.Statement {
 	case token.RETURN:
 		return p.parseReturnStatement()
 	default:
-		return nil
+		return p.parseExpressionStatement()
 	}
 }
 
@@ -93,6 +117,32 @@ func (p *Parser) parseReturnStatement() *ast.ReturnStatement {
 	return stmt
 }
 
+func (p *Parser) parseExpressionStatement() *ast.ExpressionStatement {
+	stmt := &ast.ExpressionStatement{Token: p.curToken}
+
+	stmt.Expression = p.parseExpression(LOWEST)
+
+	for p.peekTokenIs(token.SEMICOLON) {
+		p.nextToke()
+	}
+
+	return stmt
+}
+
+func (p *Parser) parseExpression(precedence int) ast.Expression {
+	prefix := p.prefixParseFn[p.curToken.Type]
+	if prefix == nil {
+		return nil
+	}
+	leftExp := prefix()
+
+	return leftExp
+}
+
+func (p *Parser) parseIdentifier() ast.Expression {
+	return &ast.Identifier{Token: p.curToken, Value: p.curToken.Literal}
+}
+
 func (p *Parser) curTokenIs(t token.Type) bool {
 	return p.curToken.Type == t
 }
@@ -118,4 +168,12 @@ func (p *Parser) Errors() []string {
 func (p *Parser) peekError(t token.Type) {
 	msg := fmt.Sprintf("expected next token to be %s, got %s instead", t, p.peekToken.Type)
 	p.errors = append(p.errors, msg)
+}
+
+func (p *Parser) registerPrefix(tokenType token.Type, fn prefixParseFn) {
+	p.prefixParseFn[tokenType] = fn
+}
+
+func (p *Parser) registerInfix(tokenType token.Type, fn infixParseFn) {
+	p.infixParseFn[tokenType] = fn
 }
