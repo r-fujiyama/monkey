@@ -4,73 +4,73 @@ package token
 type Type string
 
 const (
-	// ILLEGAL 不正なトークン種別
-	ILLEGAL = "ILLEGAL"
-	// EOF ファイル末尾
-	EOF = "EOF"
+	// Illegal 不正なトークン種別
+	Illegal = "ILLEGAL"
+	// Eof ファイル末尾
+	Eof = "EOF"
 
 	// Identifiers + literals
 
-	// IDENT 識別子(Identifiers)
-	IDENT = "IDENT" // add, foobar, x, y, ...
-	// INT 整数値
-	INT = "INT" // 1343456
+	// Ident 識別子(Identifiers)
+	Ident = "IDENT" // add, foobar, x, y, ...
+	// Int 整数値
+	Int = "INT" // 1343456
 
 	// Operators
 
-	// ASSIGN =
-	ASSIGN = "="
-	// PLUS +
-	PLUS = "+"
-	// MINUS -
-	MINUS = "-"
-	// BANG !
-	BANG = "!"
-	// ASTERISK *
-	ASTERISK = "*"
-	// SLASH /
-	SLASH = "/"
+	// Assign =
+	Assign = "="
+	// Plus +
+	Plus = "+"
+	// Minus -
+	Minus = "-"
+	// Bang !
+	Bang = "!"
+	// Asterisk *
+	Asterisk = "*"
+	// Slash /
+	Slash = "/"
 
-	// LT <
-	LT = "<"
-	// GT >
-	GT = ">"
-	// EQ ==
-	EQ = "=="
+	// Lt <
+	Lt = "<"
+	// Gt >
+	Gt = ">"
+	// Eq ==
+	Eq = "=="
 	// NotEq !=
 	NotEq = "!="
 
 	// Delimiters
 
-	// COMMA ,
-	COMMA = ","
-	// SEMICOLON ;
-	SEMICOLON = ";"
-	// LPAREN (
-	LPAREN = "("
-	// RPAREN )
-	RPAREN = ")"
-	// LBRACE {
-	LBRACE = "{"
-	// RBRACE }
-	RBRACE = "}"
+	// Comma ,
+	Comma = ","
+	// Semicolon ;
+	Semicolon = ";"
+	// Lparen (
+	Lparen = "("
+	// Rparen )
+	Rparen = ")"
+	// Lbrace {
+	Lbrace = "{"
+	// Rbrace }
+	Rbrace = "}"
 
 	// Keywords
 
-	// FUNCTION 関数
-	FUNCTION = "FUNCTION"
-	// LET 変数束縛(LET)
-	LET = "LET"
-	// TRUE true
-	TRUE = "TRUE"
-	// FALSE false
-	FALSE = "FALSE"
-	// IF if
-	IF = "IF"
-	// ELSE else
-	ELSE = "ELSE"
-	// RETURN return
-	RETURN = "RETURN"
+	// Function 関数
+	Function = "FUNCTION"
+	// Let 変数束縛(Let)
+	Let = "LET"
+	// True true
+	True = "TRUE"
+	// False false
+	False = "FALSE"
+	// If if
+	If = "IF"
+	// Else else
+	Else = "ELSE"
+	// Return return
+	Return = "RETURN"
 )
 
 // Token 字句解析器(Lexer)より出力されるトークン。
@@ -80,13 +80,13 @@ type Token struct {
 }
 
 var keywords = map[string]Type{
-	"fn":     FUNCTION,
-	"let":    LET,
-	"true":   TRUE,
-	"false":  FALSE,
-	"if":     IF,
-	"else":   ELSE,
-	"return": RETURN,
+	"fn":     Function,
+	"let":    Let,
+	"true":   True,
+	"false":  False,
+	"if":     If,
+	"else":   Else,
+	"return": Return,
 }
 
 // LookupIdent 与えられた識別子に対して適切なToken.Typeを返す。
@@ -94,5 +94,5 @@ func LookupIdent(ident string) Type {
 	if tok, ok := keywords[ident]; ok {
 		return tok
 	}
-	return IDENT
+	return Ident
 }
