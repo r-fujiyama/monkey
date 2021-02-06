@@ -147,3 +147,26 @@ func (il *IntegerLiteral) expressionNode() {}
 func (il *IntegerLiteral) TokenLiteral() string { return il.Token.Literal }
 
 func (il *IntegerLiteral) String() string { return il.Token.Literal }
+
+// PrefixExpression 前置演算子
+type PrefixExpression struct {
+	Token    token.Token
+	Operator string
+	Right    Expression
+}
+
+//nolint コンパイラから支援を受けるために、ダミーメソッドを定義。
+func (pe *PrefixExpression) expressionNode() {}
+
+// TokenLiteral トークンのリテラル値を返す。
+func (pe *PrefixExpression) TokenLiteral() string { return pe.Token.Literal }
+
+func (pe *PrefixExpression) String() string {
+	out := &strings.Builder{}
+	out.WriteString("(")
+	out.WriteString(pe.Operator)
+	out.WriteString(pe.Right.String())
+	out.WriteString(")")
+
+	return out.String()
+}

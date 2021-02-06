@@ -47,6 +47,8 @@ func New(l *lexer.Lexer) *Parser {
 	p.prefixParseFn = make(map[token.Type]prefixParseFn)
 	p.registerPrefix(token.IDENT, p.parseIdentifier)
 	p.registerPrefix(token.INT, p.parseIntegerLiteral)
+	p.registerPrefix(token.BANG, p.parsePrefixExpression)
+	p.registerPrefix(token.MINUS, p.parsePrefixExpression)
 
 	// 2つのトークンを読み込む。curTokenとpeekTokenの両方がセットされる。
 	p.nextToke()
@@ -57,6 +59,46 @@ func New(l *lexer.Lexer) *Parser {
 func (p *Parser) nextToke() {
 	p.curToken = p.peekToken
 	p.peekToken = p.l.NextToken()
+}
+
+func (p *Parser) curTokenIs(t token.Type) bool {
+	return p.curToken.Type == t
+}
+
+func (p *Parser) peekTokenIs(t token.Type) bool {
+	return p.peekToken.Type == t
+}
+
+func (p *Parser) expectPeek(t token.Type) bool {
+	if p.peekTokenIs(t) {
+		p.nextToke()
+		return true
+	}
+	p.peekError(t)
+	return false
+}
+
+func (p *Parser) registerPrefix(tokenType token.Type, fn prefixParseFn) {
+	p.prefixParseFn[tokenType] = fn
+}
+
+func (p *Parser) registerInfix(tokenType token.Type, fn infixParseFn) {
+	p.infixParseFn[tokenType] = fn
+}
+
+// Errors エラーを返却する
+func (p *Parser) Errors() []string {
+	return p.errors
+}
+
+func (p *Parser) peekError(t token.Type) {
+	msg := fmt.Sprintf("expected next token to be %s, got %s instead", t, p.peekToken.Type)
+	p.errors = append(p.errors, msg)
+}
+
+func (p *Parser) noPrefixParseFnError(t token.Type) {
+	msg := fmt.Sprintf("no prefix parse function for %s found", t)
+	p.errors = append(p.errors, msg)
 }
 
 // ParseProgram プログラムの構文解析を行う。
@@ -134,6 +176,7 @@ func (p *Parser) parseExpressionStatement() *ast.ExpressionStatement {
 func (p *Parser) parseExpression(precedence int) ast.Expression {
 	prefix := p.prefixParseFn[p.curToken.Type]
 	if prefix == nil {
+		p.noPrefixParseFnError(p.curToken.Type)
 		return nil
 	}
 	leftExp := prefix()
@@ -160,37 +203,15 @@ func (p *Parser) parseIntegerLiteral() ast.Expression {
 	return lit
 }
 
-func (p *Parser) curTokenIs(t token.Type) bool {
-	return p.curToken.Type == t
-}
-
-func (p *Parser) peekTokenIs(t token.Type) bool {
-	return p.peekToken.Type == t
-}
-
-func (p *Parser) expectPeek(t token.Type) bool {
-	if p.peekTokenIs(t) {
-		p.nextToke()
-		return true
+func (p *Parser) parsePrefixExpression() ast.Expression {
+	expression := &ast.PrefixExpression{
+		Token:    p.curToken,
+		Operator: p.curToken.Literal,
 	}
-	p.peekError(t)
-	return false
-}
 
-// Errors エラーを返却する
-func (p *Parser) Errors() []string {
-	return p.errors
-}
+	p.nextToke()
 
-func (p *Parser) peekError(t token.Type) {
-	msg := fmt.Sprintf("expected next token to be %s, got %s instead", t, p.peekToken.Type)
-	p.errors = append(p.errors, msg)
-}
+	expression.Right = p.parseExpression(PREFIX)
 
-func (p *Parser) registerPrefix(tokenType token.Type, fn prefixParseFn) {
-	p.prefixParseFn[tokenType] = fn
-}
-
-func (p *Parser) registerInfix(tokenType token.Type, fn infixParseFn) {
-	p.infixParseFn[tokenType] = fn
+	return expression
 }
