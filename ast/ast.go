@@ -133,3 +133,17 @@ func (i *Identifier) expressionNode() {}
 func (i *Identifier) TokenLiteral() string { return i.Token.Literal }
 
 func (i *Identifier) String() string { return i.Value }
+
+// IntegerLiteral 整数リテラル
+type IntegerLiteral struct {
+	Token token.Token
+	Value int64
+}
+
+//nolint コンパイラから支援を受けるために、ダミーメソッドを定義。
+func (il *IntegerLiteral) expressionNode() {}
+
+// TokenLiteral トークンのリテラル値を返す。
+func (il *IntegerLiteral) TokenLiteral() string { return il.Token.Literal }
+
+func (il *IntegerLiteral) String() string { return il.Token.Literal }
