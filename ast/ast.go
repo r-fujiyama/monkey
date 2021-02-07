@@ -134,6 +134,20 @@ func (i *Identifier) TokenLiteral() string { return i.Token.Literal }
 
 func (i *Identifier) String() string { return i.Value }
 
+// Boolean 真偽値
+type Boolean struct {
+	Token token.Token
+	Value bool
+}
+
+//nolint コンパイラから支援を受けるために、ダミーメソッドを定義。
+func (b *Boolean) expressionNode() {}
+
+// TokenLiteral トークンのリテラル値を返す。
+func (b *Boolean) TokenLiteral() string { return b.Token.Literal }
+
+func (b *Boolean) String() string { return b.Token.Literal }
+
 // IntegerLiteral 整数リテラル
 type IntegerLiteral struct {
 	Token token.Token
