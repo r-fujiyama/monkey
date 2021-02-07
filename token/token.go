@@ -6,8 +6,8 @@ type Type string
 const (
 	// Illegal 不正なトークン種別
 	Illegal = "ILLEGAL"
-	// Eof ファイル末尾
-	Eof = "EOF"
+	// EOF ファイル末尾
+	EOF = "EOF"
 
 	// Identifiers + literals
 
