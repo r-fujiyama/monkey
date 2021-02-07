@@ -221,7 +221,7 @@ func TestParsingInfixExpressions(t *testing.T) {
 func TestOperatorPrecedenceParsing(t *testing.T) {
 	tests := []struct {
 		input    string
-		excepted string
+		expected string
 	}{
 		{
 			"-a * b",
@@ -296,8 +296,8 @@ func TestOperatorPrecedenceParsing(t *testing.T) {
 		checkParserErrors(t, p)
 
 		actual := program.String()
-		if actual != tt.excepted {
-			t.Errorf("excepted=%q, got=%q", tt.excepted, actual)
+		if actual != tt.expected {
+			t.Errorf("expected=%q, got=%q", tt.expected, actual)
 		}
 	}
 }
