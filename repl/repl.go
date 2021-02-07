@@ -8,14 +8,14 @@ import (
 	"monkey/token"
 )
 
-// PROMPT prompt
-const PROMPT = "> > "
+// prompt prompt
+const prompt = "> > "
 
 // Start start REPL
 func Start(in io.Reader, out io.Writer) {
 	scanner := bufio.NewScanner(in)
 	for {
-		fmt.Println(PROMPT)
+		fmt.Println(prompt)
 		scanned := scanner.Scan()
 		if !scanned {
 			return

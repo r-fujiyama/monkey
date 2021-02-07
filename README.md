@@ -5,7 +5,7 @@
 Linux distributionは**Ubuntu 20.04 LTS**を使用する。
 
 ## Ubuntu 20.04
-1. ```cd .wsl -d Ubuntu-20.04```コマンドを実行しUbuntuのshellを起動する。  
+1. ```wsl -d Ubuntu-20.04```コマンドを実行しUbuntuのshellを起動する。  
 1. ユーザの登録が求められるので登録を行う。
 1.  パッケージを最新化するため、以下の手順を実施する。
     - ```sudo apt update```
@@ -31,7 +31,7 @@ Linux distributionは**Ubuntu 20.04 LTS**を使用する。
     - [Remote - Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
 1. Ubuntuのシェル上で以下のコマンドを実行する。
     - ```code {project directory path}```
-1. WSL2上で起動したVS Codeでコマンドパレットより以下を実行。
+1. Ubuntu上で起動したVS Codeでコマンドパレットより以下を実行。
     - ```Remote-Containers: Reopen in Container```
 
 # その他
