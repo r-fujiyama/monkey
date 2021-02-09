@@ -63,6 +63,7 @@ func New(l *lexer.Lexer) *Parser {
 	p.registerPrefix(token.Minus, p.parsePrefixExpression)
 	p.registerPrefix(token.True, p.parseBoolean)
 	p.registerPrefix(token.False, p.parseBoolean)
+	p.registerPrefix(token.Lparen, p.parseGroupedExpression)
 
 	p.infixParseFn = make(map[token.Type]infixParseFn)
 	p.registerInfix(token.Plus, p.parseInfixExpression)
@@ -75,12 +76,12 @@ func New(l *lexer.Lexer) *Parser {
 	p.registerInfix(token.Gt, p.parseInfixExpression)
 
 	// 2つのトークンを読み込む。curTokenとpeekTokenの両方がセットされる。
-	p.nextToke()
-	p.nextToke()
+	p.nextToken()
+	p.nextToken()
 	return p
 }
 
-func (p *Parser) nextToke() {
+func (p *Parser) nextToken() {
 	p.curToken = p.peekToken
 	p.peekToken = p.l.NextToken()
 }
@@ -95,7 +96,7 @@ func (p *Parser) peekTokenIs(t token.Type) bool {
 
 func (p *Parser) expectPeek(t token.Type) bool {
 	if p.peekTokenIs(t) {
-		p.nextToke()
+		p.nextToken()
 		return true
 	}
 	p.peekError(t)
@@ -134,7 +135,7 @@ func (p *Parser) ParseProgram() *ast.Program {
 		if stmt != nil {
 			program.Statements = append(program.Statements, stmt)
 		}
-		p.nextToke()
+		p.nextToken()
 	}
 
 	return program
@@ -170,7 +171,7 @@ func (p *Parser) parseLetStatement() *ast.LetStatement {
 
 	// TODO: セミコロンに遭遇するまで式を読み飛ばしてしまっている。
 	for !p.curTokenIs(token.Semicolon) {
-		p.nextToke()
+		p.nextToken()
 	}
 
 	return stmt
@@ -181,11 +182,11 @@ func (p *Parser) parseReturnStatement() *ast.ReturnStatement {
 
 	stmt := &ast.ReturnStatement{Token: p.curToken}
 
-	p.nextToke()
+	p.nextToken()
 
 	// TODO: セミコロンに遭遇するまで式を読み飛ばしてしまっている。
 	for !p.curTokenIs(token.Semicolon) {
-		p.nextToke()
+		p.nextToken()
 	}
 
 	return stmt
@@ -199,7 +200,7 @@ func (p *Parser) parseExpressionStatement() *ast.ExpressionStatement {
 	stmt.Expression = p.parseExpression(lowest)
 
 	for p.peekTokenIs(token.Semicolon) {
-		p.nextToke()
+		p.nextToken()
 	}
 
 	return stmt
@@ -221,7 +222,7 @@ func (p *Parser) parseExpression(precedence int) ast.Expression {
 			return leftExp
 		}
 
-		p.nextToke()
+		p.nextToken()
 
 		leftExp = infix(leftExp)
 	}
@@ -259,7 +260,7 @@ func (p *Parser) parsePrefixExpression() ast.Expression {
 		Operator: p.curToken.Literal,
 	}
 
-	p.nextToke()
+	p.nextToken()
 
 	expression.Right = p.parseExpression(prefix)
 
@@ -276,7 +277,7 @@ func (p *Parser) parseInfixExpression(left ast.Expression) ast.Expression {
 	}
 
 	precedence := p.curPrecedence()
-	p.nextToke()
+	p.nextToken()
 	expression.Right = p.parseExpression(precedence)
 
 	return expression
@@ -285,6 +286,20 @@ func (p *Parser) parseInfixExpression(left ast.Expression) ast.Expression {
 func (p *Parser) parseBoolean() ast.Expression {
 	defer untrace(trace("parseBoolean"))
 	return &ast.Boolean{Token: p.curToken, Value: p.curTokenIs(token.True)}
+}
+
+func (p *Parser) parseGroupedExpression() ast.Expression {
+	defer untrace(trace("parseGroupedExpression"))
+
+	p.nextToken()
+
+	exp := p.parseExpression(lowest)
+
+	if !p.expectPeek(token.Rparen) {
+		return nil
+	}
+
+	return exp
 }
 
 func (p *Parser) peekPrecedence() int {
