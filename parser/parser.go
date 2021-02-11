@@ -172,8 +172,11 @@ func (p *Parser) parseLetStatement() *ast.LetStatement {
 		return nil
 	}
 
-	// TODO: セミコロンに遭遇するまで式を読み飛ばしてしまっている。
-	for !p.curTokenIs(token.Semicolon) {
+	p.nextToken()
+
+	stmt.Value = p.parseExpression(lowest)
+
+	if p.peekTokenIs(token.Semicolon) {
 		p.nextToken()
 	}
 
@@ -187,8 +190,9 @@ func (p *Parser) parseReturnStatement() *ast.ReturnStatement {
 
 	p.nextToken()
 
-	// TODO: セミコロンに遭遇するまで式を読み飛ばしてしまっている。
-	for !p.curTokenIs(token.Semicolon) {
+	stmt.ReturnValue = p.parseExpression(lowest)
+
+	if p.peekTokenIs(token.Semicolon) {
 		p.nextToken()
 	}
 
