@@ -76,6 +76,7 @@ func New(l *lexer.Lexer) *Parser {
 	p.registerInfix(token.NotEq, p.parseInfixExpression)
 	p.registerInfix(token.Lt, p.parseInfixExpression)
 	p.registerInfix(token.Gt, p.parseInfixExpression)
+	p.registerInfix(token.Lparen, p.parseCallExpression)
 
 	// 2つのトークンを読み込む。curTokenとpeekTokenの両方がセットされる。
 	p.nextToken()
@@ -230,6 +231,22 @@ func (p *Parser) parseExpression(precedence int) ast.Expression {
 	}
 
 	return leftExp
+}
+
+func (p *Parser) peekPrecedence() int {
+	if p, ok := precedences[p.peekToken.Type]; ok {
+		return p
+	}
+
+	return lowest
+}
+
+func (p *Parser) curPrecedence() int {
+	if p, ok := precedences[p.curToken.Type]; ok {
+		return p
+	}
+
+	return lowest
 }
 
 func (p *Parser) parseIdentifier() ast.Expression {
@@ -407,18 +424,36 @@ func (p *Parser) parseFunctionParameters() []*ast.Identifier {
 	return identifiers
 }
 
-func (p *Parser) peekPrecedence() int {
-	if p, ok := precedences[p.peekToken.Type]; ok {
-		return p
-	}
+func (p *Parser) parseCallExpression(function ast.Expression) ast.Expression {
+	defer untrace(trace("parseCallExpression"))
 
-	return lowest
+	exp := &ast.CallExpression{Token: p.curToken, Function: function}
+	exp.Arguments = p.parseCallArguments()
+	return exp
 }
 
-func (p *Parser) curPrecedence() int {
-	if p, ok := precedences[p.curToken.Type]; ok {
-		return p
+func (p *Parser) parseCallArguments() []ast.Expression {
+	defer untrace(trace("parseCallArguments"))
+
+	args := []ast.Expression{}
+
+	if p.peekTokenIs(token.Rparen) {
+		p.nextToken()
+		return args
 	}
 
-	return lowest
+	p.nextToken()
+	args = append(args, p.parseExpression(lowest))
+
+	for p.peekTokenIs(token.Comma) {
+		p.nextToken()
+		p.nextToken()
+		args = append(args, p.parseExpression(lowest))
+	}
+
+	if !p.expectPeek(token.Rparen) {
+		return nil
+	}
+
+	return args
 }
