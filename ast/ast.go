@@ -53,7 +53,6 @@ type LetStatement struct {
 	Value Expression
 }
 
-//nolint コンパイラから支援を受けるために、ダミーメソッドを定義。
 func (ls *LetStatement) statementNode() {}
 
 // TokenLiteral トークンのリテラル値を返す
@@ -81,7 +80,6 @@ type ReturnStatement struct {
 	ReturnValue Expression
 }
 
-//nolint コンパイラから支援を受けるために、ダミーメソッドを定義。
 func (rs *ReturnStatement) statementNode() {}
 
 // TokenLiteral トークンのリテラル値を返す。
@@ -107,7 +105,6 @@ type ExpressionStatement struct {
 	Expression Expression
 }
 
-//nolint コンパイラから支援を受けるために、ダミーメソッドを定義。
 func (es *ExpressionStatement) statementNode() {}
 
 // TokenLiteral トークンのリテラル値を返す。
@@ -120,13 +117,33 @@ func (es *ExpressionStatement) String() string {
 	return ""
 }
 
+// BlockStatement 中括弧
+type BlockStatement struct {
+	Token      token.Token // { トークン
+	Statements []Statement
+}
+
+func (bs *BlockStatement) statementNode() {}
+
+// TokenLiteral トークンのリテラル値を返す。
+func (bs *BlockStatement) TokenLiteral() string { return bs.Token.Literal }
+
+func (bs *BlockStatement) String() string {
+	out := &strings.Builder{}
+
+	for _, s := range bs.Statements {
+		out.WriteString(s.String())
+	}
+
+	return out.String()
+}
+
 // Identifier 識別子
 type Identifier struct {
 	Token token.Token // token.IDENT トークン
 	Value string
 }
 
-//nolint コンパイラから支援を受けるために、ダミーメソッドを定義。
 func (i *Identifier) expressionNode() {}
 
 // TokenLiteral トークンのリテラル値を返す。
@@ -140,7 +157,6 @@ type Boolean struct {
 	Value bool
 }
 
-//nolint コンパイラから支援を受けるために、ダミーメソッドを定義。
 func (b *Boolean) expressionNode() {}
 
 // TokenLiteral トークンのリテラル値を返す。
@@ -154,7 +170,6 @@ type IntegerLiteral struct {
 	Value int64
 }
 
-//nolint コンパイラから支援を受けるために、ダミーメソッドを定義。
 func (il *IntegerLiteral) expressionNode() {}
 
 // TokenLiteral トークンのリテラル値を返す。
@@ -169,7 +184,6 @@ type PrefixExpression struct {
 	Right    Expression
 }
 
-//nolint コンパイラから支援を受けるために、ダミーメソッドを定義。
 func (pe *PrefixExpression) expressionNode() {}
 
 // TokenLiteral トークンのリテラル値を返す。
@@ -194,7 +208,6 @@ type InfixExpression struct {
 	Right    Expression
 }
 
-//nolint コンパイラから支援を受けるために、ダミーメソッドを定義。
 func (ie *InfixExpression) expressionNode() {}
 
 // TokenLiteral トークンのリテラル値を返す。
@@ -207,6 +220,92 @@ func (ie *InfixExpression) String() string {
 	out.WriteString(ie.Left.String())
 	out.WriteString(" " + ie.Operator + " ")
 	out.WriteString(ie.Right.String())
+	out.WriteString(")")
+
+	return out.String()
+}
+
+// IfExpression If式
+type IfExpression struct {
+	Token       token.Token // if トークン
+	Condition   Expression
+	Consequence *BlockStatement
+	Alternative *BlockStatement
+}
+
+func (ie *IfExpression) expressionNode() {}
+
+// TokenLiteral トークンのリテラル値を返す。
+func (ie *IfExpression) TokenLiteral() string { return ie.Token.Literal }
+
+func (ie *IfExpression) String() string {
+	out := &strings.Builder{}
+
+	out.WriteString("if")
+	out.WriteString(ie.Condition.String())
+	out.WriteString(" ")
+	out.WriteString(ie.Consequence.String())
+
+	if ie.Alternative != nil {
+		out.WriteString("else ")
+		out.WriteString(ie.Alternative.String())
+	}
+
+	return out.String()
+}
+
+// FunctionLiteral 関数識別子
+type FunctionLiteral struct {
+	Token      token.Token // 'fn' トークン
+	Parameters []*Identifier
+	Body       *BlockStatement
+}
+
+func (fl *FunctionLiteral) expressionNode() {}
+
+// TokenLiteral トークンのリテラル値を返す。
+func (fl *FunctionLiteral) TokenLiteral() string { return fl.Token.Literal }
+
+func (fl *FunctionLiteral) String() string {
+	out := &strings.Builder{}
+
+	params := []string{}
+	for _, p := range fl.Parameters {
+		params = append(params, p.String())
+	}
+
+	out.WriteString(fl.TokenLiteral())
+	out.WriteString("(")
+	out.WriteString(strings.Join(params, ", "))
+	out.WriteString(") ")
+	out.WriteString(fl.Body.String())
+
+	return out.String()
+}
+
+// CallExpression 呼び出し式
+type CallExpression struct {
+	Token     token.Token // '(' トークン
+	Function  Expression  // Identifier または FunctionLiteral
+	Arguments []Expression
+}
+
+func (ce *CallExpression) expressionNode() {}
+
+// TokenLiteral トークンのリテラル値を返す。
+func (ce *CallExpression) TokenLiteral() string { return ce.Token.Literal }
+
+func (ce *CallExpression) String() string {
+	out := &strings.Builder{}
+
+	args := []string{}
+	for _, a := range ce.Arguments {
+		args = append(args, a.String())
+	}
+
+	out.WriteString(ce.Function.String())
+	out.WriteString("(")
+	out.WriteString(strings.Join(args, ", "))
 	out.WriteString(")")
 
 	return out.String()
