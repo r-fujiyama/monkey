@@ -53,7 +53,6 @@ type LetStatement struct {
 	Value Expression
 }
 
-//nolint コンパイラから支援を受けるために、ダミーメソッドを定義。
 func (ls *LetStatement) statementNode() {}
 
 // TokenLiteral トークンのリテラル値を返す
@@ -81,7 +80,6 @@ type ReturnStatement struct {
 	ReturnValue Expression
 }
 
-//nolint コンパイラから支援を受けるために、ダミーメソッドを定義。
 func (rs *ReturnStatement) statementNode() {}
 
 // TokenLiteral トークンのリテラル値を返す。
@@ -107,7 +105,6 @@ type ExpressionStatement struct {
 	Expression Expression
 }
 
-//nolint コンパイラから支援を受けるために、ダミーメソッドを定義。
 func (es *ExpressionStatement) statementNode() {}
 
 // TokenLiteral トークンのリテラル値を返す。
@@ -126,7 +123,6 @@ type BlockStatement struct {
 	Statements []Statement
 }
 
-//nolint コンパイラから支援を受けるために、ダミーメソッドを定義。
 func (bs *BlockStatement) statementNode() {}
 
 // TokenLiteral トークンのリテラル値を返す。
@@ -148,7 +144,6 @@ type Identifier struct {
 	Value string
 }
 
-//nolint コンパイラから支援を受けるために、ダミーメソッドを定義。
 func (i *Identifier) expressionNode() {}
 
 // TokenLiteral トークンのリテラル値を返す。
@@ -162,7 +157,6 @@ type Boolean struct {
 	Value bool
 }
 
-//nolint コンパイラから支援を受けるために、ダミーメソッドを定義。
 func (b *Boolean) expressionNode() {}
 
 // TokenLiteral トークンのリテラル値を返す。
@@ -176,7 +170,6 @@ type IntegerLiteral struct {
 	Value int64
 }
 
-//nolint コンパイラから支援を受けるために、ダミーメソッドを定義。
 func (il *IntegerLiteral) expressionNode() {}
 
 // TokenLiteral トークンのリテラル値を返す。
@@ -191,7 +184,6 @@ type PrefixExpression struct {
 	Right    Expression
 }
 
-//nolint コンパイラから支援を受けるために、ダミーメソッドを定義。
 func (pe *PrefixExpression) expressionNode() {}
 
 // TokenLiteral トークンのリテラル値を返す。
@@ -216,7 +208,6 @@ type InfixExpression struct {
 	Right    Expression
 }
 
-//nolint コンパイラから支援を受けるために、ダミーメソッドを定義。
 func (ie *InfixExpression) expressionNode() {}
 
 // TokenLiteral トークンのリテラル値を返す。
@@ -242,7 +233,6 @@ type IfExpression struct {
 	Alternative *BlockStatement
 }
 
-//nolint コンパイラから支援を受けるために、ダミーメソッドを定義。
 func (ie *IfExpression) expressionNode() {}
 
 // TokenLiteral トークンのリテラル値を返す。
