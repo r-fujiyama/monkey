@@ -13,6 +13,9 @@ const (
 	IntegerObj = "INTEGER"
 	// BooleanObj 真偽値
 	BooleanObj = "BOOLEAN"
+
+	// ReturnValueObj 戻り値オブジェクト
+	ReturnValueObj = "RETURN_VALUE"
 )
 
 // Object オブジェクト
@@ -51,3 +54,14 @@ func (n *Null) Type() Type { return NullObj }
 
 // Inspect オブジェクトの値を返却する。
 func (n *Null) Inspect() string { return "null" }
+
+// ReturnValue 戻り地
+type ReturnValue struct {
+	Value Object
+}
+
+// Type オブジェクトのタイプを返却する。
+func (rv *ReturnValue) Type() Type { return ReturnValueObj }
+
+// Inspect オブジェクトの値を返却する。
+func (rv *ReturnValue) Inspect() string { return rv.Value.Inspect() }
