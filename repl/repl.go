@@ -4,12 +4,13 @@ import (
 	"bufio"
 	"fmt"
 	"io"
+	"monkey/evaluator"
 	"monkey/lexer"
 	"monkey/parser"
 )
 
-// prompt > >
-const prompt = "> > "
+// prompt >>
+const prompt = ">> "
 
 // Start start REPL
 func Start(in io.Reader, out io.Writer) {
@@ -32,10 +33,13 @@ func Start(in io.Reader, out io.Writer) {
 			continue
 		}
 
-		_, err := io.WriteString(out, program.String())
-		printIOError(err)
-		_, err = io.WriteString(out, "\n")
-		printIOError(err)
+		evaluated := evaluator.Eval(program)
+		if evaluated != nil {
+			_, err := io.WriteString(out, evaluated.Inspect())
+			printIOError(err)
+			_, err = io.WriteString(out, "\n")
+			printIOError(err)
+		}
 	}
 }
 
