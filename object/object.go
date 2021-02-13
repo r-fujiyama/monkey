@@ -7,6 +7,9 @@ import (
 	"strings"
 )
 
+// BuiltinFunction 組み込み関数
+type BuiltinFunction func(args ...Object) Object
+
 // Type オブジェクト種別
 type Type string
 
@@ -28,6 +31,8 @@ const (
 
 	// FunctionObj 関数オブジェクト
 	FunctionObj = "FUNCTION"
+	// BuiltinObj 組み込み関数
+	BuiltinObj = "BUILTIN"
 )
 
 // Object オブジェクト
@@ -128,3 +133,14 @@ func (e *Error) Type() Type { return ErrorObj }
 
 // Inspect オブジェクトの値を返却する。
 func (e *Error) Inspect() string { return "ERROR: " + e.Message }
+
+// Builtin 組み込み関数
+type Builtin struct {
+	Fn BuiltinFunction
+}
+
+// Type オブジェクトのタイプを返却する。
+func (b *Builtin) Type() Type { return BuiltinObj }
+
+// Inspect オブジェクトの値を返却する。
+func (b *Builtin) Inspect() string { return "builtin function" }
