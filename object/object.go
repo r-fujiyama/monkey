@@ -33,6 +33,9 @@ const (
 	FunctionObj = "FUNCTION"
 	// BuiltinObj 組み込み関数
 	BuiltinObj = "BUILTIN"
+
+	// ArrayObj 配列
+	ArrayObj = "ARRAY"
 )
 
 // Object オブジェクト
@@ -144,3 +147,27 @@ func (b *Builtin) Type() Type { return BuiltinObj }
 
 // Inspect オブジェクトの値を返却する。
 func (b *Builtin) Inspect() string { return "builtin function" }
+
+// Array 配列
+type Array struct {
+	Elements []Object
+}
+
+// Type オブジェクトのタイプを返却する。
+func (ao *Array) Type() Type { return ArrayObj }
+
+// Inspect オブジェクトの値を返却する。
+func (ao *Array) Inspect() string {
+	var out bytes.Buffer
+
+	elements := []string{}
+	for _, e := range ao.Elements {
+		elements = append(elements, e.Inspect())
+	}
+
+	out.WriteString("[")
+	out.WriteString(strings.Join(elements, ", "))
+	out.WriteString("]")
+
+	return out.String()
+}
