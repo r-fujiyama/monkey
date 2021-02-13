@@ -7,6 +7,9 @@ import (
 	"strings"
 )
 
+// BuiltinFunction 組み込み関数
+type BuiltinFunction func(args ...Object) Object
+
 // Type オブジェクト種別
 type Type string
 
@@ -20,12 +23,19 @@ const (
 	IntegerObj = "INTEGER"
 	// BooleanObj 真偽値
 	BooleanObj = "BOOLEAN"
+	//StringObj 文字列
+	StringObj = "STRING"
 
 	// ReturnValueObj 戻り値オブジェクト
 	ReturnValueObj = "RETURN_VALUE"
 
 	// FunctionObj 関数オブジェクト
 	FunctionObj = "FUNCTION"
+	// BuiltinObj 組み込み関数
+	BuiltinObj = "BUILTIN"
+
+	// ArrayObj 配列
+	ArrayObj = "ARRAY"
 )
 
 // Object オブジェクト
@@ -105,6 +115,17 @@ func (f *Function) Inspect() string {
 	return out.String()
 }
 
+// String 文字列
+type String struct {
+	Value string
+}
+
+// Type オブジェクトのタイプを返却する。
+func (s *String) Type() Type { return StringObj }
+
+// Inspect オブジェクトの値を返却する。
+func (s *String) Inspect() string { return s.Value }
+
 // Error Error
 type Error struct {
 	Message string
@@ -115,3 +136,38 @@ func (e *Error) Type() Type { return ErrorObj }
 
 // Inspect オブジェクトの値を返却する。
 func (e *Error) Inspect() string { return "ERROR: " + e.Message }
+
+// Builtin 組み込み関数
+type Builtin struct {
+	Fn BuiltinFunction
+}
+
+// Type オブジェクトのタイプを返却する。
+func (b *Builtin) Type() Type { return BuiltinObj }
+
+// Inspect オブジェクトの値を返却する。
+func (b *Builtin) Inspect() string { return "builtin function" }
+
+// Array 配列
+type Array struct {
+	Elements []Object
+}
+
+// Type オブジェクトのタイプを返却する。
+func (ao *Array) Type() Type { return ArrayObj }
+
+// Inspect オブジェクトの値を返却する。
+func (ao *Array) Inspect() string {
+	var out bytes.Buffer
+
+	elements := []string{}
+	for _, e := range ao.Elements {
+		elements = append(elements, e.Inspect())
+	}
+
+	out.WriteString("[")
+	out.WriteString(strings.Join(elements, ", "))
+	out.WriteString("]")
+
+	return out.String()
+}

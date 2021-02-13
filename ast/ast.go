@@ -310,3 +310,66 @@ func (ce *CallExpression) String() string {
 
 	return out.String()
 }
+
+// StringLiteral 文字列リテラル
+type StringLiteral struct {
+	Token token.Token
+	Value string
+}
+
+func (sl *StringLiteral) expressionNode() {}
+
+// TokenLiteral トークンのリテラル値を返す。
+func (sl *StringLiteral) TokenLiteral() string { return sl.Token.Literal }
+
+func (sl *StringLiteral) String() string { return sl.Token.Literal }
+
+// ArrayLiteral 配列リテラル
+type ArrayLiteral struct {
+	Token    token.Token // '[' トークン
+	Elements []Expression
+}
+
+func (al *ArrayLiteral) expressionNode() {}
+
+// TokenLiteral トークンのリテラル値を返す。
+func (al *ArrayLiteral) TokenLiteral() string { return al.Token.Literal }
+
+func (al *ArrayLiteral) String() string {
+	out := &strings.Builder{}
+
+	elements := []string{}
+	for _, el := range al.Elements {
+		elements = append(elements, el.String())
+	}
+
+	out.WriteString("[")
+	out.WriteString(strings.Join(elements, ", "))
+	out.WriteString("]")
+
+	return out.String()
+}
+
+// IndexExpression 添字
+type IndexExpression struct {
+	Token token.Token // [ トークン
+	Left  Expression
+	Index Expression
+}
+
+func (ie *IndexExpression) expressionNode() {}
+
+// TokenLiteral トークンのリテラル値を返す。
+func (ie *IndexExpression) TokenLiteral() string { return ie.Token.Literal }
+
+func (ie *IndexExpression) String() string {
+	out := &strings.Builder{}
+
+	out.WriteString("(")
+	out.WriteString(ie.Left.String())
+	out.WriteString("[")
+	out.WriteString(ie.Index.String())
+	out.WriteString("])")
+
+	return out.String()
+}
