@@ -8,6 +8,8 @@ type Type string
 const (
 	// NullObj NULL
 	NullObj = "NULL"
+	// ErrorObj ERROR
+	ErrorObj = "ERROR"
 
 	// IntegerObj 整数値
 	IntegerObj = "INTEGER"
@@ -65,3 +67,14 @@ func (rv *ReturnValue) Type() Type { return ReturnValueObj }
 
 // Inspect オブジェクトの値を返却する。
 func (rv *ReturnValue) Inspect() string { return rv.Value.Inspect() }
+
+// Error Error
+type Error struct {
+	Message string
+}
+
+// Type オブジェクトのタイプを返却する。
+func (e *Error) Type() Type { return ErrorObj }
+
+// Inspect オブジェクトの値を返却する。
+func (e *Error) Inspect() string { return "ERROR: " + e.Message }
