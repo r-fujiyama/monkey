@@ -20,6 +20,8 @@ const (
 	IntegerObj = "INTEGER"
 	// BooleanObj 真偽値
 	BooleanObj = "BOOLEAN"
+	//StringObj 文字列
+	StringObj = "STRING"
 
 	// ReturnValueObj 戻り値オブジェクト
 	ReturnValueObj = "RETURN_VALUE"
@@ -104,6 +106,17 @@ func (f *Function) Inspect() string {
 
 	return out.String()
 }
+
+// String 文字列
+type String struct {
+	Value string
+}
+
+// Type オブジェクトのタイプを返却する。
+func (s *String) Type() Type { return StringObj }
+
+// Inspect オブジェクトの値を返却する。
+func (s *String) Inspect() string { return s.Value }
 
 // Error Error
 type Error struct {
