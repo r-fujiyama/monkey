@@ -56,6 +56,10 @@ const (
 	Lbrace = "{"
 	// Rbrace }
 	Rbrace = "}"
+	// Lbracket [
+	Lbracket = "["
+	// Rbracket ]
+	Rbracket = "]"
 
 	// Keywords
 
