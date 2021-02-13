@@ -15,6 +15,8 @@ const (
 	Ident = "IDENT" // add, foobar, x, y, ...
 	// Int 整数値
 	Int = "INT" // 1343456
+	// String 文字列
+	String = "STRING" // "foobar"
 
 	// Operators
 
