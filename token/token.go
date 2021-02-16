@@ -48,6 +48,9 @@ const (
 	Comma = ","
 	// Semicolon ;
 	Semicolon = ";"
+	// Colon :
+	Colon = ":"
+
 	// Lparen (
 	Lparen = "("
 	// Rparen )
